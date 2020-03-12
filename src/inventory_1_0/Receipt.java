@@ -20,4 +20,25 @@ public class Receipt {
         this.date = rDate;
         this.picture = rImg;
     }
+    
+    public int getId(){
+        return id;
+    }
+    
+    public String getReceiptNo(){
+        return receiptNo;
+    }
+    
+    public String getType(){
+        return type;
+    }
+    
+    public String getDate(){
+        return date;
+    }
+    
+    public byte[] getPicture(){
+        return picture;
+    }
+    
 }
