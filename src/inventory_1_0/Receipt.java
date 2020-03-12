@@ -8,14 +8,16 @@ package inventory_1_0;
 public class Receipt {
     private int id;
     private String receiptNo;
+    private String description;
     private String type;
     private String date;
     private byte[] picture;
     
 //    Constructor
-    public Receipt(int rId, String rNo, String rType, String rDate, byte[] rImg){
+    public Receipt(int rId, String rNo, String rDesc, String rType, String rDate, byte[] rImg){
         this.id = rId;
         this.receiptNo = rNo;
+        this.description = rDesc;
         this.type = rType;
         this.date = rDate;
         this.picture = rImg;
@@ -27,6 +29,10 @@ public class Receipt {
     
     public String getReceiptNo(){
         return receiptNo;
+    }
+    
+    public String getDescription(){
+        return description;
     }
     
     public String getType(){
