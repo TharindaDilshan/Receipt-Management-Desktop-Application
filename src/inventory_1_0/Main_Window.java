@@ -401,10 +401,11 @@ public class Main_Window extends javax.swing.JFrame {
                 ps.setString(1, txt_receiptNo.getText());
                 ps.setString(2, txt_description.getText());
                 
-                SimpleDateFormat dateFormat = new SimpleDateFormat("YYY-MM-dd");
-                String dt = dateFormat.format(dateChooserCombo1);
-                
-                ps.setString(3, dt);
+                //System.out.println(dateChooserCombo1.getText());
+                //SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd");
+                //String dt = dateFormat.format(dateChooserCombo1);
+                                
+                ps.setString(3, dateChooserCombo1.getText());
                 ps.setString(4, combo_type.getSelectedItem().toString());
                 
                 InputStream im = new FileInputStream(new File(imagePath));
