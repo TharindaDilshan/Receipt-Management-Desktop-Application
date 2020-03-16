@@ -429,6 +429,7 @@ public class Main_Window extends javax.swing.JFrame {
     private void btn_updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_updateActionPerformed
         // TODO add your handling code here:
         if(checkInputs() && txt_id.getText() != null){
+            
             String UpdateQuery = null;
             PreparedStatement ps = null;
             Connection conn = getConnection();
@@ -447,6 +448,8 @@ public class Main_Window extends javax.swing.JFrame {
                     
                     ps.setInt(5, Integer.parseInt(txt_id.getText()));
                     
+                    ps.executeUpdate();
+                    
                 }catch(Exception ex){
                     Logger.getLogger(Main_Window.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -455,10 +458,27 @@ public class Main_Window extends javax.swing.JFrame {
                 try{
                     InputStream img = new FileInputStream(new File(imagePath));
                     
-                }catch(Exception ex){
+                    UpdateQuery = "UPDATE receipts SET receiptNo = ?, description = ?, date = ?, type = ?, img = ? WHERE id = ?";
                     
+                    ps = conn.prepareStatement(UpdateQuery);
+                    
+                    ps.setString(1, txt_receiptNo.getText());
+                    ps.setString(2, txt_description.getText());
+
+                    ps.setString(3, dateChooserCombo1.getText());
+                    ps.setString(4, combo_type.getSelectedItem().toString());
+                    ps.setBlob(5, img);
+                    
+                    ps.setInt(6, Integer.parseInt(txt_id.getText()));
+                    
+                    ps.executeUpdate();
+                    
+                }catch(Exception ex){
+                    JOptionPane.showMessageDialog(null, ex.getMessage());
                 }
             }
+        }else{
+            JOptionPane.showMessageDialog(null, "Failed to update details.");
         }
     }//GEN-LAST:event_btn_updateActionPerformed
 
