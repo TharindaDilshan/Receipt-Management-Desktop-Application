@@ -42,11 +42,11 @@ public class Main_Window extends javax.swing.JFrame {
         
         try {
             conn = DriverManager.getConnection("jdbc:mysql://localhost/inventory", "root", "");
-            JOptionPane.showMessageDialog(null, "Connection Successful");
+            //JOptionPane.showMessageDialog(null, "Connection Successful");
             return conn;
         } catch (SQLException ex) {
             Logger.getLogger(Main_Window.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(null, "Connection Failed");
+            //JOptionPane.showMessageDialog(null, "Connection Failed");
             return null;
         }
     }
@@ -102,8 +102,8 @@ public class Main_Window extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         button_choose_image = new javax.swing.JButton();
         btn_insert = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        btn_update = new javax.swing.JButton();
+        btn_delete = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
@@ -199,15 +199,20 @@ public class Main_Window extends javax.swing.JFrame {
             }
         });
 
-        jButton3.setBackground(new java.awt.Color(51, 102, 255));
-        jButton3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jButton3.setText("UPDATE");
-        jButton3.setBorder(new javax.swing.border.MatteBorder(null));
+        btn_update.setBackground(new java.awt.Color(51, 102, 255));
+        btn_update.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btn_update.setText("UPDATE");
+        btn_update.setBorder(new javax.swing.border.MatteBorder(null));
+        btn_update.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_updateActionPerformed(evt);
+            }
+        });
 
-        jButton4.setBackground(new java.awt.Color(255, 0, 51));
-        jButton4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jButton4.setText("DELETE");
-        jButton4.setBorder(new javax.swing.border.MatteBorder(null));
+        btn_delete.setBackground(new java.awt.Color(255, 0, 51));
+        btn_delete.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btn_delete.setText("DELETE");
+        btn_delete.setBorder(new javax.swing.border.MatteBorder(null));
 
         jButton5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jButton5.setText("|<-  FIRST");
@@ -272,9 +277,9 @@ public class Main_Window extends javax.swing.JFrame {
                                         .addGap(51, 51, 51)
                                         .addComponent(btn_insert, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
-                                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btn_update, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
-                                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btn_delete, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addContainerGap()
@@ -323,8 +328,8 @@ public class Main_Window extends javax.swing.JFrame {
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txt_description, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btn_insert, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btn_update, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btn_delete, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(62, 62, 62)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
@@ -421,6 +426,42 @@ public class Main_Window extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btn_insertActionPerformed
 
+    private void btn_updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_updateActionPerformed
+        // TODO add your handling code here:
+        if(checkInputs() && txt_id.getText() != null){
+            String UpdateQuery = null;
+            PreparedStatement ps = null;
+            Connection conn = getConnection();
+            
+            //Update without image
+            if(imagePath == null){
+                try{
+                    UpdateQuery = "UPDATE receipts SET receiptNo = ?, description = ?, date = ?, type = ? WHERE id = ?";
+                    ps = conn.prepareStatement(UpdateQuery);
+                    
+                    ps.setString(1, txt_receiptNo.getText());
+                    ps.setString(2, txt_description.getText());
+
+                    ps.setString(3, dateChooserCombo1.getText());
+                    ps.setString(4, combo_type.getSelectedItem().toString());
+                    
+                    ps.setInt(5, Integer.parseInt(txt_id.getText()));
+                    
+                }catch(Exception ex){
+                    Logger.getLogger(Main_Window.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }else{
+               //Update with image
+                try{
+                    InputStream img = new FileInputStream(new File(imagePath));
+                    
+                }catch(Exception ex){
+                    
+                }
+            }
+        }
+    }//GEN-LAST:event_btn_updateActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -457,12 +498,12 @@ public class Main_Window extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_delete;
     private javax.swing.JButton btn_insert;
+    private javax.swing.JButton btn_update;
     private javax.swing.JButton button_choose_image;
     private javax.swing.JComboBox combo_type;
     private datechooser.beans.DateChooserCombo dateChooserCombo1;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
