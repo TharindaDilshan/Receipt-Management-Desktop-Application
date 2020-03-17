@@ -213,6 +213,11 @@ public class Main_Window extends javax.swing.JFrame {
         btn_delete.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btn_delete.setText("DELETE");
         btn_delete.setBorder(new javax.swing.border.MatteBorder(null));
+        btn_delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_deleteActionPerformed(evt);
+            }
+        });
 
         jButton5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jButton5.setText("|<-  FIRST");
@@ -481,6 +486,26 @@ public class Main_Window extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Failed to update details.");
         }
     }//GEN-LAST:event_btn_updateActionPerformed
+
+    private void btn_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_deleteActionPerformed
+        // TODO add your handling code here:
+        if(!txt_id.getText().equals("")){
+            try{
+                Connection conn = getConnection();
+                PreparedStatement ps = conn.prepareStatement("DELETE FROM receipts WHERE id = ?");
+                int id = Integer.parseInt(txt_id.getText());
+                ps.setInt(1, id);
+                ps.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Item Deleted Successfully.");
+                
+            }catch(SQLException ex){
+                Logger.getLogger(Main_Window.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(null, "Failed to Delete Item.");
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "Please Select an Item ID.");
+        }
+    }//GEN-LAST:event_btn_deleteActionPerformed
 
     /**
      * @param args the command line arguments
