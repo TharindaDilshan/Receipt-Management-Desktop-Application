@@ -12,14 +12,18 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -32,6 +36,7 @@ public class Main_Window extends javax.swing.JFrame {
      */
     public Main_Window() {
         initComponents();
+        show_receipts();
     }
     
     //Image path initalizer
@@ -76,6 +81,53 @@ public class Main_Window extends javax.swing.JFrame {
         
         return image;
     }
+    
+    //Display data 
+    //Fill arrayList with data
+    public ArrayList<Receipt> getReceiptList(){
+        ArrayList<Receipt> receiptList = new ArrayList<Receipt>();
+        Connection conn = getConnection();
+        String query = "SELECT * FROM receipts";
+        
+        Statement st;
+        ResultSet rs;
+        
+        try{
+            st = conn.createStatement();
+            rs = st.executeQuery(query);
+            Receipt receipt;
+            
+            while(rs.next()){
+                receipt = new Receipt(rs.getInt("id"), rs.getString("receiptNo"), rs.getString("description"), rs.getString("type"), rs.getString("date"), rs.getBytes("img"));
+                receiptList.add(receipt);
+            }
+            
+        }catch(SQLException ex){
+            Logger.getLogger(Main_Window.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return receiptList;
+    }
+    
+    //Populate the JTable
+    
+    public void show_receipts(){
+        ArrayList<Receipt> list = getReceiptList();
+        DefaultTableModel model = (DefaultTableModel)JTable_receipts.getModel();
+        
+        Object[] row = new Object[5];
+        for(int i = 0; i < list.size(); i++){
+            row[0] = list.get(i).getId();
+            row[1] = list.get(i).getReceiptNo();
+            row[2] = list.get(i).getType();
+            row[3] = list.get(i).getDate();
+            row[4] = list.get(i).getDescription();
+            
+            model.addRow(row);
+            
+        }
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -99,7 +151,7 @@ public class Main_Window extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         txt_description = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        JTable_receipts = new javax.swing.JTable();
         button_choose_image = new javax.swing.JButton();
         btn_insert = new javax.swing.JButton();
         btn_update = new javax.swing.JButton();
@@ -160,9 +212,9 @@ public class Main_Window extends javax.swing.JFrame {
             }
         });
 
-        jTable1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jTable1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        JTable_receipts.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        JTable_receipts.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        JTable_receipts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -178,8 +230,8 @@ public class Main_Window extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jTable1.setRowHeight(30);
-        jScrollPane1.setViewportView(jTable1);
+        JTable_receipts.setRowHeight(30);
+        jScrollPane1.setViewportView(JTable_receipts);
 
         button_choose_image.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         button_choose_image.setText("Choose Image");
@@ -422,6 +474,8 @@ public class Main_Window extends javax.swing.JFrame {
                 ps.setBlob(5, im);
                 
                 ps.executeUpdate();
+                show_receipts();
+                
                 JOptionPane.showMessageDialog(null, "Data added successfully");
             }catch(Exception ex){
                 JOptionPane.showMessageDialog(null, ex.getMessage());
@@ -454,6 +508,7 @@ public class Main_Window extends javax.swing.JFrame {
                     ps.setInt(5, Integer.parseInt(txt_id.getText()));
                     
                     ps.executeUpdate();
+                    show_receipts();
                     
                 }catch(Exception ex){
                     Logger.getLogger(Main_Window.class.getName()).log(Level.SEVERE, null, ex);
@@ -496,6 +551,7 @@ public class Main_Window extends javax.swing.JFrame {
                 int id = Integer.parseInt(txt_id.getText());
                 ps.setInt(1, id);
                 ps.executeUpdate();
+                show_receipts();
                 JOptionPane.showMessageDialog(null, "Item Deleted Successfully.");
                 
             }catch(SQLException ex){
@@ -543,6 +599,7 @@ public class Main_Window extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable JTable_receipts;
     private javax.swing.JButton btn_delete;
     private javax.swing.JButton btn_insert;
     private javax.swing.JButton btn_update;
@@ -561,7 +618,6 @@ public class Main_Window extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lbl_image;
     private javax.swing.JTextField txt_description;
     private javax.swing.JTextField txt_id;
