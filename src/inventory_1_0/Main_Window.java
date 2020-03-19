@@ -115,6 +115,12 @@ public class Main_Window extends javax.swing.JFrame {
         ArrayList<Receipt> list = getReceiptList();
         DefaultTableModel model = (DefaultTableModel)JTable_receipts.getModel();
         
+        int rowCount = model.getRowCount();
+        //Remove rows one by one from the end of the table
+        for (int i = rowCount - 1; i >= 0; i--) {
+            model.removeRow(i);
+        }
+        
         Object[] row = new Object[5];
         for(int i = 0; i < list.size(); i++){
             row[0] = list.get(i).getId();
@@ -128,6 +134,16 @@ public class Main_Window extends javax.swing.JFrame {
         }
     }
     
+    public void showItem(int index){
+        
+        txt_id.setText(Integer.toString(getReceiptList().get(index).getId()));
+        txt_receiptNo.setText(getReceiptList().get(index).getReceiptNo());
+        combo_type.setSelectedItem(getReceiptList().get(index).getType());
+        dateChooserCombo1.setText(getReceiptList().get(index).getDate());
+        txt_description.setText(getReceiptList().get(index).getDescription());
+        lbl_image.setIcon(ResizeImage(null, getReceiptList().get(index).getPicture()));
+        
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -231,6 +247,11 @@ public class Main_Window extends javax.swing.JFrame {
             }
         });
         JTable_receipts.setRowHeight(30);
+        JTable_receipts.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JTable_receiptsMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(JTable_receipts);
 
         button_choose_image.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -510,6 +531,8 @@ public class Main_Window extends javax.swing.JFrame {
                     ps.executeUpdate();
                     show_receipts();
                     
+                    JOptionPane.showMessageDialog(null, "Data updated successfully");
+                    
                 }catch(Exception ex){
                     Logger.getLogger(Main_Window.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -562,6 +585,12 @@ public class Main_Window extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Please Select an Item ID.");
         }
     }//GEN-LAST:event_btn_deleteActionPerformed
+
+    private void JTable_receiptsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JTable_receiptsMouseClicked
+        // TODO add your handling code here:
+        int index = JTable_receipts.getSelectedRow();
+        showItem(index);
+    }//GEN-LAST:event_JTable_receiptsMouseClicked
 
     /**
      * @param args the command line arguments
