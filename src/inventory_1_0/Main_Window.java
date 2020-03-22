@@ -178,6 +178,8 @@ public class Main_Window extends javax.swing.JFrame {
         btn_previous = new javax.swing.JButton();
         btn_last = new javax.swing.JButton();
         lbl_image = new javax.swing.JLabel();
+        txt_search = new javax.swing.JTextField();
+        lbl_search = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -330,6 +332,28 @@ public class Main_Window extends javax.swing.JFrame {
         lbl_image.setToolTipText("");
         lbl_image.setOpaque(true);
 
+        txt_search.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txt_search.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                txt_searchInputMethodTextChanged(evt);
+            }
+        });
+        txt_search.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_searchActionPerformed(evt);
+            }
+        });
+        txt_search.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_searchKeyTyped(evt);
+            }
+        });
+
+        lbl_search.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        lbl_search.setText("Search");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -354,9 +378,13 @@ public class Main_Window extends javax.swing.JFrame {
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addComponent(combo_type, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
                                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(lbl_search, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(txt_description, javax.swing.GroupLayout.PREFERRED_SIZE, 367, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(txt_description, javax.swing.GroupLayout.PREFERRED_SIZE, 367, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGap(14, 14, 14)
@@ -430,11 +458,14 @@ public class Main_Window extends javax.swing.JFrame {
                             .addComponent(btn_insert, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btn_update, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btn_delete, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(62, 62, 62)
+                        .addGap(61, 61, 61)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(btn_previous, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
                             .addComponent(btn_next, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btn_first, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(btn_first, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(lbl_search, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(btn_last, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -645,6 +676,64 @@ public class Main_Window extends javax.swing.JFrame {
         showItem(pos);
     }//GEN-LAST:event_btn_previousActionPerformed
 
+    private void txt_searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_searchActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_txt_searchActionPerformed
+
+    private void txt_searchInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_txt_searchInputMethodTextChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_searchInputMethodTextChanged
+
+    private void txt_searchKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_searchKeyTyped
+        // TODO add your handling code here:
+        if(!txt_search.getText().equals("")){
+            
+                ArrayList<Receipt> receiptList = new ArrayList<Receipt>();
+                Connection conn = getConnection();
+                String query = "SELECT * FROM receipts WHERE receiptNo LIKE '%" + txt_search.getText() + "%' OR type LIKE '%" + txt_search.getText() + "%' OR date LIKE '%" + txt_search.getText() + "%' OR description LIKE '%" + txt_search.getText() + "%'";
+
+                Statement st;
+                ResultSet rs;
+
+                try{
+                    st = conn.createStatement();
+                    rs = st.executeQuery(query);
+                    Receipt receipt;
+
+                    while(rs.next()){
+                        receipt = new Receipt(rs.getInt("id"), rs.getString("receiptNo"), rs.getString("description"), rs.getString("type"), rs.getString("date"), rs.getBytes("img"));
+                        receiptList.add(receipt);
+                    }
+
+                }catch(SQLException ex){
+                    Logger.getLogger(Main_Window.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                DefaultTableModel model = (DefaultTableModel)JTable_receipts.getModel();
+
+                int rowCount = model.getRowCount();
+                //Remove rows one by one from the end of the table
+                for (int i = rowCount - 1; i >= 0; i--) {
+                    model.removeRow(i);
+                }
+
+                Object[] row = new Object[5];
+                for(int i = 0; i < receiptList.size(); i++){
+                    row[0] = receiptList.get(i).getId();
+                    row[1] = receiptList.get(i).getReceiptNo();
+                    row[2] = receiptList.get(i).getType();
+                    row[3] = receiptList.get(i).getDate();
+                    row[4] = receiptList.get(i).getDescription();
+
+                    model.addRow(row);
+
+                }
+        }else{
+            show_receipts();
+        }
+    }//GEN-LAST:event_txt_searchKeyTyped
+
     /**
      * @param args the command line arguments
      */
@@ -701,8 +790,10 @@ public class Main_Window extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbl_image;
+    private javax.swing.JLabel lbl_search;
     private javax.swing.JTextField txt_description;
     private javax.swing.JTextField txt_id;
     private javax.swing.JTextField txt_receiptNo;
+    private javax.swing.JTextField txt_search;
     // End of variables declaration//GEN-END:variables
 }
